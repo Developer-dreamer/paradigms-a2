@@ -1,3 +1,6 @@
+# Ignore .vs
+**/.vs
+
 # Prerequisites
 *.d
 
