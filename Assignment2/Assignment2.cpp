@@ -1,20 +1,56 @@
-﻿// Assignment2.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include <iostream>
+﻿#include <iostream>
+# include "References.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	char* helper = "0 - close the program\n"
+		"1 - append symbols to the end\n"
+		"2 - start the new line\n"
+		"3 / 4 - save to / load from file\n"
+		"5 - print current text to console\n"
+		"6 - insert text by index in file\n"
+		"7 - search substring position in file\n"
+		"8 - concatenate texts\n"
+		"9 - clear console\n";
+	printf("%s", helper);
+	while (true) {
+
+		switch (command) {
+
+			// close the program
+		case 0:
+			return 0;
+			// append symbols to the end of string
+		case 1:
+			break;
+			// start new line in the string
+		case 2:
+			break;
+		// save current string to the file 
+		case 3:
+			break;
+			// load string from the file
+		case 4:
+			break;
+			// print current string to console
+		case 5:
+			break;
+			// insert text by index in file
+		case 6:
+			break;
+
+			// search substring position in file
+		case 7:
+			break;
+			// additional case to work with unconcatenated texts
+		case 8:
+			break;
+		case 9:
+			break;
+		default:
+			printf("Such command does not exist\n");
+			break;
+		}
+	}
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

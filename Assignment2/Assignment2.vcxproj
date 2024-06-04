@@ -128,6 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assignment2.cpp" />
+    <ClCompile Include="ConsoleProcessor.cpp" />
+    <ClCompile Include="FileProcessor.cpp" />
+    <ClCompile Include="TextProcessor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="References.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
