@@ -1,5 +1,8 @@
 # Ignore .vs
 **/.vs
+**/x64
+**/Debug
+**/Release
 
 # Prerequisites
 *.d
