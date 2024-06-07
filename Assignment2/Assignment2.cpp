@@ -1,9 +1,9 @@
 ﻿#include <iostream>
-# include "References.h"
+#include "ConsoleProcessor.h"
 
 int main()
 {
-	char* helper = "0 - close the program\n"
+	const char* helper = "0 - close the program\n"
 		"1 - append symbols to the end\n"
 		"2 - start the new line\n"
 		"3 / 4 - save to / load from file\n"
@@ -13,15 +13,22 @@ int main()
 		"8 - concatenate texts\n"
 		"9 - clear console\n";
 	printf("%s", helper);
+
+	Console consoleProcessor;
+
 	while (true) {
+		
+		int command = consoleProcessor.ReadCommand();
 
 		switch (command) {
 
 			// close the program
 		case 0:
+			std::cout << "Program has been closed successfully";
 			return 0;
 			// append symbols to the end of string
 		case 1:
+			consoleProcessor.ReadConsole();
 			break;
 			// start new line in the string
 		case 2:
@@ -37,6 +44,7 @@ int main()
 			break;
 			// insert text by index in file
 		case 6:
+			Coordinates coords = consoleProcessor.ReadCoordinates();
 			break;
 
 			// search substring position in file
@@ -45,7 +53,9 @@ int main()
 			// additional case to work with unconcatenated texts
 		case 8:
 			break;
+			//clear console
 		case 9:
+			consoleProcessor.Clear();
 			break;
 		default:
 			printf("Such command does not exist\n");
@@ -53,4 +63,3 @@ int main()
 		}
 	}
 }
-

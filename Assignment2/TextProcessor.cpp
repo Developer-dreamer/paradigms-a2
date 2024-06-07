@@ -1,3 +1,6 @@
+#include <iostream>
+#include "ConsoleProcessor.h"
+
 class TextProcessor {
 public:
 	TextProcessor(int rows, int lineChars) {
@@ -24,10 +27,4 @@ private:
 	int rows_;
 	int lineChars_;
 	Coordinates cursorPos_;
-};
-
-struct Coordinates {
-	int row;
-	int index;
-	int charAmount;
 };
