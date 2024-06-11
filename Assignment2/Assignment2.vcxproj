@@ -130,6 +130,8 @@
     <ClCompile Include="Assignment2.cpp" />
     <ClCompile Include="ConsoleProcessor.cpp" />
     <ClCompile Include="FileProcessor.cpp" />
+    <ClCompile Include="ProgramBackup.cpp" />
+    <ClCompile Include="ProgramBackup.h" />
     <ClCompile Include="TextProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>

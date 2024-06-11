@@ -6,8 +6,8 @@
 class FileProcessor {
 public:
 	FileProcessor(const char* fileName);
-	void SaveToFile(TextProcessor localText);
-	void LoadFromFile(TextProcessor localText);
+	void SaveToFile(TextProcessor& localText);
+	void LoadFromFile(TextProcessor& localText);
 private:
 	char* fileName_;
 	friend TextProcessor;

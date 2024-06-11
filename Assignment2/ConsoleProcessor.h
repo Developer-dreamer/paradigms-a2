@@ -2,8 +2,8 @@
 
 #ifndef CONSOLEPROCESSOR
 struct Coordinates {
-    int row;
-    int index;
+    size_t row;
+    ptrdiff_t index;
 };
 
 class Console {
