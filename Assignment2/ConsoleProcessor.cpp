@@ -5,10 +5,8 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-char* Console::inputText_;
-int Console::inputTextLen_ = 64;
 
-void Console::ReadConsole() {
+char* Console::ReadConsole() {
     cout << "Enter a string: ";
 
     char ch;
@@ -21,18 +19,19 @@ void Console::ReadConsole() {
     while ((ch = cin.get()) != '\n') {
         if (size == inputTextLen_) {
             // Resize the array
-            Console::dynamicResize(size);
+            dynamicResize(size);
         }
         inputText_[size++] = ch;
     }
 
     if (size == inputTextLen_) {
-        Console::dynamicResize(size);
+        dynamicResize(size);
     }
     // Add the null terminator
     inputText_[size] = '\0';
 
     cout << "String " << inputText_ << endl; // Print inputText_
+    return inputText_;
 }
 
 int Console::ReadCommand() {

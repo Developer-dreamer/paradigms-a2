@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef PROCESSORS
+#ifndef CONSOLEPROCESSOR
 struct Coordinates {
     int row;
     int index;
@@ -8,15 +8,15 @@ struct Coordinates {
 
 class Console {
 public:
-    static void ReadConsole();
+    char* ReadConsole();
     int ReadCommand();
     Coordinates ReadCoordinates();
     void Clear();
 private:
-    static char* inputText_;
-    static int inputTextLen_;
+    char* inputText_;
+    int inputTextLen_ = 64;
     int command_;
     Coordinates coords_;
-    static void dynamicResize(int size);
+    void dynamicResize(int size);
 };
 #endif // !PROCESSOR
