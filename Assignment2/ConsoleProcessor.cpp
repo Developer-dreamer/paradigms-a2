@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cctype>
 #include "ConsoleProcessor.h"
+#include <limits>
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -74,7 +76,7 @@ void Console::Clear() {
 #ifdef _WIN32
 	system("cls");
 #else
-	system("clear");
+	(void)system("clear");
 #endif
 }
 

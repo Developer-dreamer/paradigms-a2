@@ -6,8 +6,8 @@
 
 int main()
 {
-	const char fileName[] = "Text.txt";
-	const char* helper = "0 - close the program\n"
+	constexpr char fileName[] = "Text.txt";
+	auto helper = "0 - close the program\n"
 		"1 - append symbols to the end\n"
 		"2 - start the new line\n"
 		"3 / 4 - save to / load from file\n"
@@ -30,8 +30,7 @@ int main()
 	BackupHistory backupHistory;
 
 	while (true) {
-		
-		int command = consoleProcessor.ReadCommand();
+		const int command = consoleProcessor.ReadCommand();
 		char* userInput = nullptr;
 		char* strToSearch;
 
@@ -41,116 +40,147 @@ int main()
 
 			// close the program
 		case 0:
-			std::cout << "Program has been closed successfully";
-			return 0;
+			{
+				std::cout << "Program has been closed successfully";
+				return 0;
+			}
 			// append symbols to the end of string
 		case 1:
-			backup = Backup(localText);
-			backupHistory.AddToHistory(backup);
-			userInput = consoleProcessor.ReadConsole();
-			localText.EndInsert(userInput);
-			
-			
-			break;
+			{
+				backup = Backup(localText);
+				backupHistory.AddToHistory(backup);
+				userInput = consoleProcessor.ReadConsole();
+				localText.EndInsert(userInput);
+				break;
+			}
 			// start new line in the string
 		case 2:
-			backup = Backup(localText);
-			backupHistory.AddToHistory(backup);
-			localText.StartNewLine();
-			
-			std::cout << "New line has been started" << std::endl;
-			break;
+			{
+				backup = Backup(localText);
+				backupHistory.AddToHistory(backup);
+				localText.StartNewLine();
+
+				std::cout << "New line has been started" << std::endl;
+				break;
+			}
 		// save current string to the file 
 		case 3:
-			file.SaveToFile(localText);
+			{
+				file.SaveToFile(localText);
 
-			std::cout << "Text has been saved to the file" << std::endl;
-			break;
+				std::cout << "Text has been saved to the file" << std::endl;
+				break;
+			}
 			// load string from the file
 		case 4:
-			file.LoadFromFile(localText);
-			break;
+			{
+				file.LoadFromFile(localText);
+				break;
+			}
 			// print current string to console
 		case 5:
-			localText.PrintText();
-			break;
+			{
+				localText.PrintText();
+				break;
+			}
 			// insert text by index in file
 		case 6:
-			backup = Backup(localText);
-			backupHistory.AddToHistory(backup);
-			Coordinates coords = consoleProcessor.ReadCoordinates();
-			userInput = consoleProcessor.ReadConsole();
-			localText.IndexInput(userInput, coords);
-			
-			break;
+			{
+				backup = Backup(localText);
+				backupHistory.AddToHistory(backup);
+				Coordinates coords = consoleProcessor.ReadCoordinates();
+				userInput = consoleProcessor.ReadConsole();
+				localText.IndexInput(userInput, coords);
 
+				break;
+			}
 			// search substring position in file
 		case 7:
-			strToSearch = consoleProcessor.ReadConsole();
-			localText.SubstrSearch(strToSearch);
-			break;
+			{
+				strToSearch = consoleProcessor.ReadConsole();
+				localText.SubstrSearch(strToSearch);
+				break;
+			}
 			// Delete by index
 		case 8:
-			backup = Backup(localText);
-			backupHistory.AddToHistory(backup);
-			Coordinates coordsToDelete = consoleProcessor.ReadCoordinates();
-            int deleteLength;
-			std::cout << "Enter the length of the string to delete: ";
-            std::cin >> deleteLength;
-            localText.IndexDelete(coordsToDelete, deleteLength);
-			
-			break;
+			{
+				backup = Backup(localText);
+				backupHistory.AddToHistory(backup);
+				Coordinates coordsToDelete = consoleProcessor.ReadCoordinates();
+				int deleteLength;
+				std::cout << "Enter the length of the string to delete: ";
+				std::cin >> deleteLength;
+				localText.IndexDelete(coordsToDelete, deleteLength);
+
+				break;
+			}
 			// Copy
 		case 9:
-			Coordinates coordsToCopy = consoleProcessor.ReadCoordinates();
-			int copyLength;
-			std::cout << "Enter the length of the string to copy: ";
-			std::cin >> copyLength;
-			localText.Copy(copyLength, coordsToCopy);
-			break;
+			{
+				Coordinates coordsToCopy = consoleProcessor.ReadCoordinates();
+				int copyLength;
+				std::cout << "Enter the length of the string to copy: ";
+				std::cin >> copyLength;
+				localText.Copy(copyLength, coordsToCopy);
+				break;
+			}
 			// Paste
 		case 10:
-			Coordinates coordsToPaste = consoleProcessor.ReadCoordinates();
-			localText.Paste(coordsToPaste);
-			break;
+			{
+				Coordinates coordsToPaste = consoleProcessor.ReadCoordinates();
+				localText.Paste(coordsToPaste);
+				break;
+			}
 			// Cut
 		case 11:
-			Coordinates coordsToCut = consoleProcessor.ReadCoordinates();
-			int cutLength;
-			std::cout << "Enter the length of the string to cut: ";
-			std::cin >> cutLength;
-			localText.Cut(cutLength, coordsToCut);
-			break;
+			{
+				Coordinates coordsToCut = consoleProcessor.ReadCoordinates();
+				int cutLength;
+				std::cout << "Enter the length of the string to cut: ";
+				std::cin >> cutLength;
+				localText.Cut(cutLength, coordsToCut);
+				break;
+			}
 			// insert with replacement
 		case 12:
-			backup = Backup(localText);
-			backupHistory.AddToHistory(backup);
-			Coordinates coordsToReplace = consoleProcessor.ReadCoordinates();
-			userInput = consoleProcessor.ReadConsole();
-			size_t charsToReplace;
-			std::cout << "Enter the length of the string to replace: ";
-			std::cin >> charsToReplace;
-			localText.IndexInputReplacement(userInput, coordsToReplace, charsToReplace);
-			break;
+			{
+				backup = Backup(localText);
+				backupHistory.AddToHistory(backup);
+				Coordinates coordsToReplace = consoleProcessor.ReadCoordinates();
+				userInput = consoleProcessor.ReadConsole();
+				size_t charsToReplace;
+				std::cout << "Enter the length of the string to replace: ";
+				std::cin >> charsToReplace;
+				localText.IndexInputReplacement(userInput, coordsToReplace, charsToReplace);
+				break;
+			}
 			// Undo
-		case 13: 
-			backup = Backup(localText);
-			backupHistory.AddToHistory_redo(backup);
-			backupHistory.Undo(localText);
-			break;
+		case 13:
+			{
+				backup = Backup(localText);
+				backupHistory.AddToHistory_redo(backup);
+				backupHistory.Undo(localText);
+				break;
+			}
 		// Redo
 		case 14:
-			backup = Backup(localText);
-			backupHistory.AddToHistory(backup);
-			backupHistory.Redo(localText);
-			break;
+			{
+				backup = Backup(localText);
+				backupHistory.AddToHistory(backup);
+				backupHistory.Redo(localText);
+				break;
+			}
 		// clear console
 		case 15:
-			consoleProcessor.Clear();
-			break;
+			{
+				consoleProcessor.Clear();
+				break;
+			}
 		default:
-			printf("Such command does not exist\n");
-			break;
+			{
+				printf("Such command does not exist\n");
+				break;
+			}
 		}
 	}
 }

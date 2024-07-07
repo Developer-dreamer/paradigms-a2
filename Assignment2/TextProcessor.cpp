@@ -1,20 +1,28 @@
-#define _CRT_SECURE_NO_WARNINGS
+#define CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include "TextProcessor.h"
+
+#include <cstring>
+
 #include "ProgramBackup.h"
 
 class BackupHistory;
 
 
-TextProcessor::TextProcessor(int rows, int lineChars) : rows_(rows), lineChars_(lineChars), coords_{ 0, 0 }, buffer_{} {
+TextProcessor::TextProcessor(int rows, int lineChars) : rows_(rows), lineChars_(lineChars), coords_{ 0, 0 }, buffer_{}, cursorPos_ {0, 0} {
 	text_ = new char* [rows_];
 	std::fill_n(text_, rows_, nullptr);
 };
 
 
-void TextProcessor::EndInsert(char* userStr) {
-	for (int i = 0; i < rows_; i++) {
-		if (text_[i] == NULL) {
+void TextProcessor::EndInsert(const char* userStr) {
+	// if (cursorPos_.row != 0 || cursorPos_.index != 0) {
+	// 	IndexInput(userStr, cursorPos_);
+	// 	return;
+	// }
+	int i;
+	for (i = 0; i < rows_; i++) {
+		if (text_[i] == nullptr) {
 			text_[i] = new char[lineChars_];
 			if (lineChars_ <= strlen(userStr)) {
 				ResizeLine();
@@ -22,54 +30,53 @@ void TextProcessor::EndInsert(char* userStr) {
 			strcpy(text_[i], userStr);
 			break;
 		}
-		else if (text_[i][0] == '\n' && i+1 < lineChars_ && text_[i + 1] == NULL) {
+		if (text_[i][0] == '\n' && i+1 < lineChars_ && text_[i + 1] == nullptr) {
 			strcpy(text_[i], userStr);
 			break;
 		}
-		else if (text_[i + 1] == NULL ) {
+		if (text_[i + 1] == nullptr) {
 			if (lineChars_ <= strlen(userStr) || lineChars_ <= strlen(text_[i])) {
 				ResizeLine();
 			}
 			strcat(text_[i], userStr);
 			break;
 		}
-		else {
-			if (rows_ <= i) {
-				ResizeRows();
-			}
+		if (rows_ <= i) {
+			ResizeRows();
 		}
 		
 	}
+	//
+	// UpdateCursor(i);
+	// std::cout << "Cursor position: (" << cursorPos_.row << ", " << cursorPos_.index << ")" << std::endl;
 }
 void TextProcessor::StartNewLine() {
 	for (int i = 0; i < rows_; i++) {
-		if (text_[i] == NULL) {
+		if (text_[i] == nullptr) {
 			text_[i] = new char[lineChars_];
 			text_[i][0] = '\n';
 			break;
 		}
-		else {
-			if (rows_ <= i) {
-				ResizeRows();
-			}
+		if (rows_ <= i) {
+			ResizeRows();
 		}
-
 	}
+	// cursorPos_.row ++;
 }
 
-void TextProcessor::IndexInput(char* userInput, Coordinates coords) {
+void TextProcessor::IndexInput(const char* userInput, Coordinates coords) {
 	this->coords_ = coords;
 
 	if (coords_.row < 0 || coords_.row >= rows_ || coords_.index < 0 || coords_.index >= lineChars_) {
 		exit(1);
 	}
 
-	if (text_ == NULL) {
+	if (text_ == nullptr) {
 		text_ = new char* [rows_];
 		std::fill_n(text_, rows_, nullptr);
 	}
 
-	if (text_[coords_.row] == NULL) {
+	if (text_[coords_.row] == nullptr) {
 		text_[coords_.row] = new char[lineChars_];
 		std::fill_n(text_[coords_.row], lineChars_, '\0');
 	}
@@ -94,29 +101,32 @@ void TextProcessor::IndexInput(char* userInput, Coordinates coords) {
 	// Insert the new text
 	memcpy(text_[coords_.row] + coords_.index, userInput, strlen(userInput));
 
+	// UpdateCursor(userInput);
+	// std::cout << "Cursor position: (" << cursorPos_.row << ", " << cursorPos_.index << ")" << std::endl;
+
 	// Free the user input
 	delete[] userInput;
 	userInput = nullptr;
 }
 
-void TextProcessor::IndexInputReplacement(char* userInput, Coordinates coords, size_t charsToReplace) {
+void TextProcessor::IndexInputReplacement(const char* userInput, const Coordinates coords, const size_t charsToReplace) {
 	this->coords_ = coords;
 
 	if (coords_.row < 0 || coords_.row >= rows_ || coords_.index < 0 || coords_.index >= lineChars_) {
 		exit(1);
 	}
 
-	if (text_ == NULL) {
+	if (text_ == nullptr) {
 		text_ = new char* [rows_];
 		std::fill_n(text_, rows_, nullptr);
 	}
 
-	if (text_[coords_.row] == NULL) {
+	if (text_[coords_.row] == nullptr) {
 		text_[coords_.row] = new char[lineChars_];
 		std::fill_n(text_[coords_.row], lineChars_, '\0');
 	}
 
-	size_t new_length = coords_.index + strlen(userInput) + strlen(text_[coords_.row] + coords_.index) - charsToReplace;
+	const size_t new_length = coords_.index + strlen(userInput) + strlen(text_[coords_.row] + coords_.index) - charsToReplace;
 
 	if (lineChars_ < new_length) {
 		lineChars_ = new_length;
@@ -142,8 +152,9 @@ void TextProcessor::IndexInputReplacement(char* userInput, Coordinates coords, s
 }
 
 
-void TextProcessor::SubstrSearch(char* userInput) {
-	if (text_ == NULL || userInput == NULL) {
+void TextProcessor::SubstrSearch(const char* userInput) const
+{
+	if (text_ == nullptr || userInput == nullptr) {
 		return;
 	}
 
@@ -151,18 +162,18 @@ void TextProcessor::SubstrSearch(char* userInput) {
 	int numMatches = 0;
 
 	for (int i = 0; i < rows_; i++) {
-		if (text_[i] == NULL) {
+		if (text_[i] == nullptr) {
 			continue;
 		}
 
 		char* found = strstr(text_[i], userInput);
-		while (found != NULL) {
+		while (found != nullptr) {
 
 			coords[numMatches].row = i;
 			coords[numMatches].index = found - text_[i];
 			numMatches++;
 
-			if (found + 1 < text_[i] + strlen(text_[i]) && found != NULL) {
+			if (found + 1 < text_[i] + strlen(text_[i]) && found != nullptr) {
 				found = strstr(found + 1, userInput);
 			}
 			else {
@@ -178,43 +189,45 @@ void TextProcessor::SubstrSearch(char* userInput) {
 
 }
 
-void TextProcessor::IndexDelete(Coordinates coords, size_t charsToDelete) {
+void TextProcessor::IndexDelete(const Coordinates coords, const size_t charsToDelete) {
 	this->coords_ = coords;
 
 	if (coords_.row < 0 || coords_.row >= rows_ || coords_.index < 0 || coords_.index >= lineChars_) {
-		exit(1);
+		exit(1); // Better to handle error more gracefully in real applications
 	}
 
-	if (text_ == NULL || text_[coords_.row] == NULL) {
+	if (text_ == nullptr || text_[coords_.row] == nullptr) {
 		return; // nothing to delete
 	}
 
-	size_t charsAvailable = strlen(text_[coords_.row] + coords_.index);
+	size_t lineLength = strlen(text_[coords_.row]);
+	if (coords_.index >= lineLength) {
+		return; // Index beyond the current line length
+	}
+
+	size_t charsAvailable = lineLength - coords_.index;
 	size_t charsToDeleteHere = std::min(charsToDelete, charsAvailable);
 
 	// Move existing elements to the left to fill the gap
-	memmove(text_[coords_.row] + coords_.index, text_[coords_.row] + coords_.index + charsToDeleteHere, charsAvailable - charsToDeleteHere + 1);
+	memmove(text_[coords_.row] + coords_.index,
+			text_[coords_.row] + coords_.index + charsToDeleteHere,
+			charsAvailable - charsToDeleteHere + 1); // +1 for null terminator
 
-	// Update the length of the line if necessary
-	if (strlen(text_[coords_.row]) < lineChars_) {
-		lineChars_ = strlen(text_[coords_.row]) + 1;
-	}
-
-	// If the entire line was deleted, free the memory
+	// If the entire line was deleted or becomes empty, consider freeing the memory
 	if (strlen(text_[coords_.row]) == 0) {
 		delete[] text_[coords_.row];
 		text_[coords_.row] = nullptr;
 	}
 }
 
-void TextProcessor::Copy(size_t charsToCopy, Coordinates coords) {
+void TextProcessor::Copy(const size_t charsToCopy, Coordinates coords) {
 	this->coords_ = coords;
 
 	if (coords_.row < 0 || coords_.row >= rows_ || coords_.index < 0 || coords_.index >= lineChars_) {
 		exit(1);
 	}
 
-	if (text_ == NULL || text_[coords_.row] == NULL) {
+	if (text_ == nullptr || text_[coords_.row] == nullptr) {
 		buffer_[0] = '\0';
 		return;
 	}
@@ -242,9 +255,10 @@ void TextProcessor::Cut(size_t charsToCut, Coordinates coords) {
 	IndexDelete(coords, charsToCut);
 }
 
-void TextProcessor::PrintText() {
+void TextProcessor::PrintText() const
+{
 	for(int i = 0; i < rows_; i++) {
-		if (text_[i] == NULL) {
+		if (text_[i] == nullptr) {
 			break;
 		}
 		if (text_[i][0] == '\n') {
@@ -254,8 +268,21 @@ void TextProcessor::PrintText() {
 	}
 }
 
+void TextProcessor::ResetCursor() {
+	cursorPos_ = { 0, 0 };
+}
+
+void TextProcessor::UpdateCursor(const int row) {
+	const int currentChar = strlen(text_[row]) - 1 ;
+	cursorPos_ = { static_cast<size_t>(row), static_cast<ptrdiff_t>(currentChar) };
+}
+
+void TextProcessor::UpdateCursor(const char* userInput) {
+	const int currentChar = strlen(userInput) - 1;
+	cursorPos_ = { coords_.row, static_cast<ptrdiff_t>(currentChar) };
+}
 void TextProcessor::ResizeRows() {
-	char** temp = new char*[rows_ * 2];
+	auto temp = new char*[rows_ * 2];
 	for (int i = 0; i < rows_; i++) {
 		temp[i] = text_[i];
 	}
@@ -266,10 +293,10 @@ void TextProcessor::ResizeRows() {
 
 void TextProcessor::ResizeLine() {
 	for (int i = 0; i < rows_; i++) {
-		if (text_[i] == NULL) {
+		if (text_[i] == nullptr) {
 			break;
 		}
-		char* temp = new char[lineChars_ * 2];
+		auto temp = new char[lineChars_ * 2];
 		if (text_[i] != nullptr) {
 			strcpy(temp, text_[i]);
 		}

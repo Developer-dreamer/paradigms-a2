@@ -8,26 +8,31 @@
 class TextProcessor {
 public:
 	TextProcessor(int rows, int lineChars);
-	void EndInsert(char* userStr);
+	void EndInsert(const char* userStr);
 	void StartNewLine();
-	void IndexInput(char* userInput, Coordinates coords);
-	void IndexInputReplacement(char* userInput, Coordinates coords, size_t charsToReplace);
+	void IndexInput(const char* userInput, Coordinates coords);
+	void IndexInputReplacement(const char* userInput, Coordinates coords, size_t charsToReplace);
 	void IndexDelete(Coordinates coords, size_t length);
-	void SubstrSearch(char* userInput);
-	void PrintText();
+	void SubstrSearch(const char* userInput) const;
+	void PrintText() const;
 	void Copy(size_t charsToCopy, Coordinates coords);
 	void Paste(Coordinates coords);
 	void Cut(size_t charsToCut, Coordinates coords);
+
 private:
 	char** text_;
 	char* buffer_;
 	size_t rows_;
 	size_t lineChars_;
 	Coordinates coords_;
+	Coordinates cursorPos_;
 	friend class FileProcessor;
-	friend class Backup;
+	friend struct Backup;
 	friend class BackupHistory;
-	
+
+	void ResetCursor();
+	void UpdateCursor(int row);
+	void UpdateCursor(const char* userInput);
 	void ResizeLine();
 	void ResizeRows();
 };

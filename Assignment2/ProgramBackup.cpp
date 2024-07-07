@@ -2,6 +2,8 @@
 #include <iostream>
 #include "ProgramBackup.h"
 
+#include <cstring>
+
 Backup::Backup() {
 	localText_ = nullptr;
 	lineChars_ = 0;

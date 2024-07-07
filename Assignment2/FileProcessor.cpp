@@ -3,6 +3,8 @@
 #include <fstream>
 #include "FileProcessor.h"
 
+#include <cstring>
+
 FileProcessor::FileProcessor(const char* fileName) {
 	fileName_ = new char[strlen(fileName) + 1];
 	strcpy(fileName_, fileName);
