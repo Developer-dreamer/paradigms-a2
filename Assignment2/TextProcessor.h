@@ -18,7 +18,9 @@ public:
 	void Copy(size_t charsToCopy, Coordinates coords);
 	void Paste(Coordinates coords);
 	void Cut(size_t charsToCut, Coordinates coords);
-
+	void ShowCursor() const;
+	void ResetCursor();
+	void SetCursor(Coordinates coords);
 private:
 	char** text_;
 	char* buffer_;
@@ -26,15 +28,17 @@ private:
 	size_t lineChars_;
 	Coordinates coords_;
 	Coordinates cursorPos_;
+
 	friend class FileProcessor;
 	friend struct Backup;
 	friend class BackupHistory;
 
-	void ResetCursor();
-	void UpdateCursor(int row);
-	void UpdateCursor(const char* userInput);
-	void ResizeLine();
-	void ResizeRows();
+	void ResetCursor_();
+	void UpdateCursor_(int row);
+	void UpdateCursor_(const char* userInput);
+	void UpdateCursor_(size_t charsToDelete);
+	void ResizeLine_();
+	void ResizeRows_();
 };
 
 #endif // ! FILEPROCESSOR

@@ -16,16 +16,20 @@ TextProcessor::TextProcessor(int rows, int lineChars) : rows_(rows), lineChars_(
 
 
 void TextProcessor::EndInsert(const char* userStr) {
-	// if (cursorPos_.row != 0 || cursorPos_.index != 0) {
-	// 	IndexInput(userStr, cursorPos_);
-	// 	return;
-	// }
+	if (cursorPos_.row != 0 || cursorPos_.index != 0) {
+		if (text_[cursorPos_.row][0] = '\n')
+		{
+			cursorPos_.index = 0;
+		}
+		IndexInput(userStr, cursorPos_);
+		return;
+	}
 	int i;
 	for (i = 0; i < rows_; i++) {
 		if (text_[i] == nullptr) {
 			text_[i] = new char[lineChars_];
 			if (lineChars_ <= strlen(userStr)) {
-				ResizeLine();
+				ResizeLine_();
 			}
 			strcpy(text_[i], userStr);
 			break;
@@ -36,19 +40,18 @@ void TextProcessor::EndInsert(const char* userStr) {
 		}
 		if (text_[i + 1] == nullptr) {
 			if (lineChars_ <= strlen(userStr) || lineChars_ <= strlen(text_[i])) {
-				ResizeLine();
+				ResizeLine_();
 			}
 			strcat(text_[i], userStr);
 			break;
 		}
 		if (rows_ <= i) {
-			ResizeRows();
+			ResizeRows_();
 		}
 		
 	}
-	//
-	// UpdateCursor(i);
-	// std::cout << "Cursor position: (" << cursorPos_.row << ", " << cursorPos_.index << ")" << std::endl;
+
+	UpdateCursor_(i);
 }
 void TextProcessor::StartNewLine() {
 	for (int i = 0; i < rows_; i++) {
@@ -58,10 +61,10 @@ void TextProcessor::StartNewLine() {
 			break;
 		}
 		if (rows_ <= i) {
-			ResizeRows();
+			ResizeRows_();
 		}
 	}
-	// cursorPos_.row ++;
+	cursorPos_.row ++;
 }
 
 void TextProcessor::IndexInput(const char* userInput, Coordinates coords) {
@@ -101,8 +104,7 @@ void TextProcessor::IndexInput(const char* userInput, Coordinates coords) {
 	// Insert the new text
 	memcpy(text_[coords_.row] + coords_.index, userInput, strlen(userInput));
 
-	// UpdateCursor(userInput);
-	// std::cout << "Cursor position: (" << cursorPos_.row << ", " << cursorPos_.index << ")" << std::endl;
+	UpdateCursor_(userInput);
 
 	// Free the user input
 	delete[] userInput;
@@ -145,6 +147,8 @@ void TextProcessor::IndexInputReplacement(const char* userInput, const Coordinat
 
 	// Insert the new text
 	memcpy(text_[coords_.row] + coords_.index, userInput, strlen(userInput));
+
+	UpdateCursor_(userInput);
 
 	// Free the user input
 	delete[] userInput;
@@ -268,21 +272,42 @@ void TextProcessor::PrintText() const
 	}
 }
 
-void TextProcessor::ResetCursor() {
+void TextProcessor::ShowCursor() const
+{
+	std::cout << "Cursor position: (" << cursorPos_.row << ", " << cursorPos_.index << ")" << std::endl;
+}
+
+void TextProcessor::ResetCursor()
+{
+	ResetCursor_();
+}
+
+void TextProcessor::SetCursor(const Coordinates coords)
+{
+	this->cursorPos_ = coords;
+}
+
+void TextProcessor::ResetCursor_() {
 	cursorPos_ = { 0, 0 };
 }
 
-void TextProcessor::UpdateCursor(const int row) {
+void TextProcessor::UpdateCursor_(const int row) {
 	const int currentChar = strlen(text_[row]) - 1 ;
 	cursorPos_ = { static_cast<size_t>(row), static_cast<ptrdiff_t>(currentChar) };
 }
 
-void TextProcessor::UpdateCursor(const char* userInput) {
-	const int currentChar = strlen(userInput) - 1;
-	cursorPos_ = { coords_.row, static_cast<ptrdiff_t>(currentChar) };
+void TextProcessor::UpdateCursor_(const char* userInput) {
+	const ptrdiff_t currentChar = strlen(userInput) + coords_.index - 1;
+	cursorPos_ = { coords_.row, currentChar };
 }
-void TextProcessor::ResizeRows() {
-	auto temp = new char*[rows_ * 2];
+
+void TextProcessor::UpdateCursor_(const size_t charsToDelete) {
+	const ptrdiff_t currentChar = coords_.index - static_cast<ptrdiff_t>(charsToDelete);
+	cursorPos_ = { coords_.row, currentChar};
+}
+
+void TextProcessor::ResizeRows_() {
+	const auto temp = new char*[rows_ * 2];
 	for (int i = 0; i < rows_; i++) {
 		temp[i] = text_[i];
 	}
@@ -291,7 +316,7 @@ void TextProcessor::ResizeRows() {
 	rows_ *= 2;
 }
 
-void TextProcessor::ResizeLine() {
+void TextProcessor::ResizeLine_() {
 	for (int i = 0; i < rows_; i++) {
 		if (text_[i] == nullptr) {
 			break;
