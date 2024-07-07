@@ -17,7 +17,7 @@ TextProcessor::TextProcessor(int rows, int lineChars) : rows_(rows), lineChars_(
 
 void TextProcessor::EndInsert(const char* userStr) {
 	if (cursorPos_.row != 0 || cursorPos_.index != 0) {
-		if (text_[cursorPos_.row][0] = '\n')
+		if (text_[cursorPos_.row][0] == '\n')
 		{
 			cursorPos_.index = 0;
 		}
@@ -195,6 +195,7 @@ void TextProcessor::SubstrSearch(const char* userInput) const
 
 void TextProcessor::IndexDelete(const Coordinates coords, const size_t charsToDelete) {
 	this->coords_ = coords;
+	this->cursorPos_ = coords;
 
 	if (coords_.row < 0 || coords_.row >= rows_ || coords_.index < 0 || coords_.index >= lineChars_) {
 		exit(1); // Better to handle error more gracefully in real applications
@@ -217,11 +218,7 @@ void TextProcessor::IndexDelete(const Coordinates coords, const size_t charsToDe
 			text_[coords_.row] + coords_.index + charsToDeleteHere,
 			charsAvailable - charsToDeleteHere + 1); // +1 for null terminator
 
-	// If the entire line was deleted or becomes empty, consider freeing the memory
-	if (strlen(text_[coords_.row]) == 0) {
-		delete[] text_[coords_.row];
-		text_[coords_.row] = nullptr;
-	}
+
 }
 
 void TextProcessor::Copy(const size_t charsToCopy, Coordinates coords) {
@@ -292,18 +289,13 @@ void TextProcessor::ResetCursor_() {
 }
 
 void TextProcessor::UpdateCursor_(const int row) {
-	const int currentChar = strlen(text_[row]) - 1 ;
+	const int currentChar = strlen(text_[row]);
 	cursorPos_ = { static_cast<size_t>(row), static_cast<ptrdiff_t>(currentChar) };
 }
 
 void TextProcessor::UpdateCursor_(const char* userInput) {
-	const ptrdiff_t currentChar = strlen(userInput) + coords_.index - 1;
+	const ptrdiff_t currentChar = strlen(userInput) + coords_.index;
 	cursorPos_ = { coords_.row, currentChar };
-}
-
-void TextProcessor::UpdateCursor_(const size_t charsToDelete) {
-	const ptrdiff_t currentChar = coords_.index - static_cast<ptrdiff_t>(charsToDelete);
-	cursorPos_ = { coords_.row, currentChar};
 }
 
 void TextProcessor::ResizeRows_() {

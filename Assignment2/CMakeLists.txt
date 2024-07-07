@@ -4,7 +4,7 @@ project(paradigms-a2) # Define the project name
 
 set(CMAKE_CXX_STANDARD 17) # Set C++ standard
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Release)
 
 # Add the executable
 add_executable(paradigms-a2

@@ -36,7 +36,6 @@ private:
 	void ResetCursor_();
 	void UpdateCursor_(int row);
 	void UpdateCursor_(const char* userInput);
-	void UpdateCursor_(size_t charsToDelete);
 	void ResizeLine_();
 	void ResizeRows_();
 };

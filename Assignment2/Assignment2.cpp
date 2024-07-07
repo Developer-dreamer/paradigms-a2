@@ -12,8 +12,8 @@ int main()
 		"2 - start the new line\n"
 		"3 / 4 - save to / load from file\n"
 		"5 - print current text to console\n"
-		"6 - insert text by index in file\n"
-		"7 - search substring position in file\n"
+		"6 - insert text by index\n"
+		"7 - search substring position\n"
 		"8 - delete by index\n"
 		"9 - copy\n"
 		"10 - paste\n"
@@ -21,7 +21,10 @@ int main()
 		"12 - insert with replacement\n"
 		"13 - udno\n"
 		"14 - redo\n"
-		"15 - clear console\n";
+		"15 - clear console\n"
+		"16 - show cursor position\n"
+		"17 - set cursor position\n"
+		"18 - reset cursor position\n";
 	printf("%s", helper);
 
 	Console consoleProcessor;
@@ -174,6 +177,25 @@ int main()
 		case 15:
 			{
 				consoleProcessor.Clear();
+				break;
+			}
+		// show cursor position
+		case 16:
+			{
+				localText.ShowCursor();
+				break;
+			}
+		// set cursor position
+		case 17:
+			{
+				Coordinates newCursorPos = consoleProcessor.ReadCoordinates();
+				localText.SetCursor(newCursorPos);
+				break;
+			}
+		// reset cursor position
+		case 18:
+			{
+				localText.ResetCursor();
 				break;
 			}
 		default:

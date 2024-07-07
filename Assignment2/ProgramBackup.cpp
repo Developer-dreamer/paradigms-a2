@@ -10,7 +10,7 @@ Backup::Backup() {
 	rows_ = 0;
 };
 
-Backup::Backup(TextProcessor& localText) {
+Backup::Backup(const TextProcessor& localText) {
 	rows_ = localText.rows_;
 	lineChars_ = localText.lineChars_;
 	localText_ = new char* [rows_];
@@ -25,15 +25,18 @@ Backup::Backup(TextProcessor& localText) {
 	}
 }
 
-char** Backup::GetText() {
+char** Backup::GetText() const
+{
 	return localText_;
 };
 
-int Backup::GetRows() {
+int Backup::GetRows() const
+{
 	return rows_;
 };
 
-int Backup::GerLineChars() {
+int Backup::GetLineChars() const
+{
 	return lineChars_;
 };
 
@@ -65,7 +68,7 @@ void BackupHistory::Undo(TextProcessor& localText) {
 	int rowsTemp = localText.rows_;
 
 	localText.rows_ = previousState.GetRows();
-	localText.lineChars_ = previousState.GerLineChars();
+	localText.lineChars_ = previousState.GetLineChars();
 	char** temp = previousState.GetText();
 
 	if (rowsTemp < localText.rows_) {
@@ -105,7 +108,7 @@ void BackupHistory::Redo(TextProcessor& localText) {
 	int rowsTemp = localText.rows_;
 
 	localText.rows_ = previousState.GetRows();
-	localText.lineChars_ = previousState.GerLineChars();
+	localText.lineChars_ = previousState.GetLineChars();
 	char** temp = previousState.GetText();
 
 	if (rowsTemp < localText.rows_) {

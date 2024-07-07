@@ -43,11 +43,9 @@ int Console::ReadCommand() {
         if (!cin.fail()) {
             break;
         }
-        else {
-            cin.clear();
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            cout << "Invalid input. Please enter a valid integer." << endl;
-        }
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a valid integer." << endl;
     }
 
     return command_;

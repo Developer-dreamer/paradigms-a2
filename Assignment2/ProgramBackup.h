@@ -8,10 +8,10 @@ class TextProcessor;
 struct Backup {
 public:
 	Backup();
-	Backup(TextProcessor& localText);
-	char** GetText();
-	int GetRows();
-	int GerLineChars();
+	Backup(const TextProcessor& localText);
+	char** GetText() const;
+	int GetRows() const;
+	int GetLineChars() const;
 	
 private:
 	char** localText_;
